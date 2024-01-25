@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CLINICAL.Application.DTOs\CLINICAL.Application.DTOs.csproj" />
+    <ProjectReference Include="..\CLINICAL.Application.Interface\CLINICAL.Application.Interface.csproj" />
+    <ProjectReference Include="..\CLINICAL.Domain\CLINICAL.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

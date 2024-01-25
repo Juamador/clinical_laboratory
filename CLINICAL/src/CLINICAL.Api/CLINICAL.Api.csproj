@@ -11,4 +11,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CLINICAL.Application.UseCase\CLINICAL.Application.UseCase.csproj" />
+  </ItemGroup>
+
 </Project>
