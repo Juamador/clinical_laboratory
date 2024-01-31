@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CLINICAL.Application.Interface;
+using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
@@ -8,11 +8,12 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.UpdateCommand
 {
     public class UpdateAnalysisHandler : IRequestHandler<UpdateAnalysisCommand, BaseResponse<bool>>
     {
-        private readonly IAnalysisRepository _analysisRepository;
+        
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public UpdateAnalysisHandler(IAnalysisRepository analysisRepository, IMapper mapper)
+        public UpdateAnalysisHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _analysisRepository = analysisRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -23,12 +24,12 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.UpdateCommand
             try
             {
                 var analysis =  _mapper.Map<Entity.Analysis>(request);
-                response.Data = await _analysisRepository.AnalysisEdit(analysis);
+                response.Data = await _unitOfWork.Analysis.ExcecAsync("dbo.SP_ANALYSIS_EDIT", new { analysis.AnalysisId, analysis.Name });
 
                 if (response.Data)
                 {
                     response.IsSuccess = true;
-                    response.Message = "Record updated successfully!!!";
+                    response.Message = "Record successfully updated!!!";
                 }
             }
             catch (Exception ex)

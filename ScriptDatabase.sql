@@ -64,8 +64,6 @@ go
 CREATE PROCEDURE dbo.SP_ANALYSIS_REGISTER
 (
 	@Name VARCHAR(100)
-	,@State INT
-	,@CreatedDate DATETIME
 )
 AS
 BEGIN
@@ -85,8 +83,8 @@ BEGIN
 	VALUES
 		(
 			@Name
-			,@State
-			,@CreatedDate
+			,1
+			,GETDATE()
 		)
 END
 go
@@ -99,6 +97,18 @@ AS
 BEGIN
 	UPDATE dbo.Analysis
 		SET Name = @Name
+	WHERE AnalysisId = @AnalysisId
+END
+go
+
+CREATE PROCEDURE dbo.SP_ANALYSIS_REMOVE
+(
+	@AnalysisId INT
+)
+AS
+BEGIN
+	DELETE 
+	FROM dbo.Analysis
 	WHERE AnalysisId = @AnalysisId
 END
 /*****************************************
