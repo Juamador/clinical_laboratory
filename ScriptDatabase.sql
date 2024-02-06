@@ -111,6 +111,16 @@ BEGIN
 	FROM dbo.Analysis
 	WHERE AnalysisId = @AnalysisId
 END
+go
+	CREATE PROCEDURE dbo.SP_CHANGE_ANALYSIS_STATE
+		@AnalysisId INT,
+		@State INT
+	AS
+	BEGIN
+		UPDATE dbo.Analysis
+			SET [State] = @State
+		WHERE AnalysisId = @AnalysisId
+	END
 /*****************************************
 --TEST STORE PROCEDURES
 *******************************************/

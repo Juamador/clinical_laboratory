@@ -1,4 +1,5 @@
-﻿using CLINICAL.Application.UseCase.UseCases.Analysis.Commands.CreateCommand;
+﻿using CLINICAL.Application.UseCase.UseCases.Analysis.Commands.ChangeStateCommand;
+using CLINICAL.Application.UseCase.UseCases.Analysis.Commands.CreateCommand;
 using CLINICAL.Application.UseCase.UseCases.Analysis.Commands.DeleteCommand;
 using CLINICAL.Application.UseCase.UseCases.Analysis.Commands.UpdateCommand;
 using CLINICAL.Application.UseCase.UseCases.Analysis.Queries.GetAllQuery;
@@ -55,6 +56,14 @@ namespace Api.Controllers
         public async Task<IActionResult> RemoveAnalysis(int AnalysisId)
         {
             var response = await _mediator.Send(new DeleteAnalysisCommand() { AnalysisId = AnalysisId});
+
+            return Ok(response);
+        }
+
+        [HttpPut("change-state")]
+        public async Task<IActionResult> ChangeState(ChangeStateAnalysisCommand Command)
+        {
+            var response = await _mediator.Send(Command);
 
             return Ok(response);
         }

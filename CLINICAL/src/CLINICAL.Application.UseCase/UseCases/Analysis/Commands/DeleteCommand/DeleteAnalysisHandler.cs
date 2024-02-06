@@ -1,5 +1,6 @@
 ﻿using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
+using CLINICAL.Utilities.Constants;
 using MediatR;
 
 namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.DeleteCommand
@@ -18,7 +19,7 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.DeleteCommand
             var response = new BaseResponse<bool>();
             try
             {
-                response.Data = await _UnitOfWork.Analysis.ExcecAsync("dbo.SP_ANALYSIS_REMOVE", new { request.AnalysisId });
+                response.Data = await _UnitOfWork.Analysis.ExcecAsync(SP.SP_ANALYSIS_REMOVE, new { request.AnalysisId });
                 if (response.Data)
                 {
                     response.IsSuccess = true;

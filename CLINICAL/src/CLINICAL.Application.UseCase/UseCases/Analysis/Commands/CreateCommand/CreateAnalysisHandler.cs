@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
+using CLINICAL.Utilities.Constants;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
 
@@ -23,7 +24,7 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.CreateCommand
             try
             {
                 var analysis = _mapper.Map<Entity.Analysis>(request);
-                response.Data = await _unitOfWork.Analysis.ExcecAsync("dbo.SP_ANALYSIS_REGISTER", new { analysis.Name });
+                response.Data = await _unitOfWork.Analysis.ExcecAsync(SP.SP_ANALYSIS_REGISTER, new { analysis.Name });
 
                 if (response.Data)
                 {

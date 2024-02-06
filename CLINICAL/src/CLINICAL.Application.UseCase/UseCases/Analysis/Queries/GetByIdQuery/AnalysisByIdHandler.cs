@@ -3,6 +3,7 @@ using CLINICAL.Application.DTOs.Analysis.Response;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
 using CLINICAL.Domain.Entities;
+using CLINICAL.Utilities.Constants;
 using MediatR;
 
 namespace CLINICAL.Application.UseCase.UseCases.Analysis.Queries.GetByIdQuery
@@ -23,7 +24,7 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Queries.GetByIdQuery
 
             try
             {
-                var analysis = await _unitOfWork.Analysis.GetByIdAsync("dbo.SP_GET_ANALYSIS_LIST_BY_ID", new {request.AnalysisId});
+                var analysis = await _unitOfWork.Analysis.GetByIdAsync(SP.SP_GET_ANALYSIS_LIST_BY_ID, new {request.AnalysisId});
                 if(analysis is null)
                 {
                     response.IsSuccess = false;

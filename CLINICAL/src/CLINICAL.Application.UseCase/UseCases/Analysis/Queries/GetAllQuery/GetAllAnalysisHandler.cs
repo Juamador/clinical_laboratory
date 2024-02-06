@@ -2,6 +2,7 @@
 using CLINICAL.Application.DTOs.Analysis.Response;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
+using CLINICAL.Utilities.Constants;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Queries.GetAllQuery
 
             try
             {
-                var analysis = await _unitOfWork.Analysis.GetAllAsync("dbo.SP_GET_ANALYSIS_LIST");
+                var analysis = await _unitOfWork.Analysis.GetAllAsync(SP.SP_GET_ANALYSIS_LIST);
                 if(analysis is not null)
                 {
                     response.IsSuccess = true;
