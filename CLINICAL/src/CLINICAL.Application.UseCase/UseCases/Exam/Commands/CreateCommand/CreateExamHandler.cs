@@ -6,41 +6,38 @@ using CLINICAL.Utilities.HelperExtensions;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
 
-namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.UpdateCommand
+namespace CLINICAL.Application.UseCase.UseCases.Exam.Commands.CreateCommand
 {
-    public class UpdateAnalysisHandler : IRequestHandler<UpdateAnalysisCommand, BaseResponse<bool>>
+    public class CreateExamHandler : IRequestHandler<CreateExamCommand, BaseResponse<bool>>
     {
-        
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public UpdateAnalysisHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateExamHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<BaseResponse<bool>> Handle(UpdateAnalysisCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<bool>> Handle(CreateExamCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var analysis =  _mapper.Map<Entity.Analysis>(request);
-                var parameters = analysis.GetPropiertiesWithValues();
-                response.Data = await _unitOfWork.Analysis.ExcecAsync(SP.SP_ANALYSIS_EDIT, parameters);
+                var exam = _mapper.Map<Entity.Exam>(request);
+                var paramters = exam.GetPropiertiesWithValues();
+                response.Data = await _unitOfWork.Exam.ExcecAsync(SP.SP_EXAM_REGISTER, paramters);
 
                 if (response.Data)
                 {
                     response.IsSuccess = true;
-                    response.Message = GlobalMessages.MESSAGES_UPDATE;
+                    response.Message = GlobalMessages.MESSAGES_SAVE;
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
-                response.IsSuccess = false;
                 response.Message = ex.Message;
             }
-
             return response;
         }
     }

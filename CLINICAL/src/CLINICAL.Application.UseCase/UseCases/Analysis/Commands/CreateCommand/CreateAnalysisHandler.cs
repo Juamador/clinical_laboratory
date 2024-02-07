@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
+using CLINICAL.Utilities.Constants;
+using CLINICAL.Utilities.HelperExtensions;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
 
@@ -23,12 +25,13 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.CreateCommand
             try
             {
                 var analysis = _mapper.Map<Entity.Analysis>(request);
-                response.Data = await _unitOfWork.Analysis.ExcecAsync("dbo.SP_ANALYSIS_REGISTER", new { analysis.Name });
+                var parameters = analysis.GetPropiertiesWithValues();
+                response.Data = await _unitOfWork.Analysis.ExcecAsync(SP.SP_ANALYSIS_REGISTER, parameters);
 
                 if (response.Data)
                 {
                     response.IsSuccess = true;
-                    response.Message = "Registration successfully created!!!";
+                    response.Message = GlobalMessages.MESSAGES_SAVE;
                 }
             }
             catch (Exception ex)

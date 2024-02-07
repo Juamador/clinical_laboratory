@@ -1,31 +1,31 @@
 ﻿using AutoMapper;
-using CLINICAL.Application.DTOs.Analysis.Response;
+using CLINICAL.Application.DTOs.Exam.Response;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
-using CLINICAL.Domain.Entities;
 using CLINICAL.Utilities.Constants;
 using MediatR;
 
-namespace CLINICAL.Application.UseCase.UseCases.Analysis.Queries.GetByIdQuery
+namespace CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetByIdQuery
 {
-    public class AnalysisByIdHandler : IRequestHandler<GetAnalysisByIdQuery, BaseResponse<GetAnalysisByIdResponseDto>>
+    public class GetExamByIdHandler : IRequestHandler<GetExamByIdQuery, BaseResponse<GetExamByIdResponseDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public AnalysisByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetExamByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<BaseResponse<GetAnalysisByIdResponseDto>> Handle(GetAnalysisByIdQuery request, CancellationToken cancellationToken)
+        public async Task <BaseResponse<GetExamByIdResponseDto>> Handle(GetExamByIdQuery request, CancellationToken cancellationToken)
         {
-            var response = new BaseResponse<GetAnalysisByIdResponseDto>();
+            var response = new BaseResponse<GetExamByIdResponseDto>();
 
             try
             {
-                var analysis = await _unitOfWork.Analysis.GetByIdAsync(SP.SP_GET_ANALYSIS_LIST_BY_ID, request);
-                if(analysis is null)
+                var exam = await _unitOfWork.Exam.GetByIdAsync(SP.SP_GET_EXAM_BY_ID, request);
+
+                if(exam is null)
                 {
                     response.IsSuccess = false;
                     response.Message = GlobalMessages.MESSAGES_QUERY_EMPTY;
@@ -33,15 +33,13 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Queries.GetByIdQuery
                 }
 
                 response.IsSuccess = true;
-                response.Data = _mapper.Map<GetAnalysisByIdResponseDto>(analysis);
+                response.Data = _mapper.Map<GetExamByIdResponseDto>(exam);
                 response.Message = GlobalMessages.MESSAGES_QUERY;
             }
             catch (Exception ex)
             {
-                response.IsSuccess = false;
                 response.Message = ex.Message;
             }
-
             return response;
         }
     }
