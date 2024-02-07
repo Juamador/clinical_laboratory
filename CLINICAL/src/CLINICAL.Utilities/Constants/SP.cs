@@ -17,7 +17,7 @@ namespace CLINICAL.Utilities.Constants
         public const string SP_CHANGE_ANALYSIS_STATE = "dbo.SP_CHANGE_ANALYSIS_STATE";
         #endregion
 
-        #region Exams
+        #region uspExams
         public const string GET_EXAMS_LIST = "dbo.GET_EXAMS_LIST";
         public const string SP_GET_EXAM_BY_ID = "dbo.SP_GET_EXAM_BY_ID";
         public const string SP_EXAM_REGISTER = "dbo.SP_EXAM_REGISTER";
@@ -25,6 +25,11 @@ namespace CLINICAL.Utilities.Constants
 
         public const string SP_REMOVE_EXAM = "dbo.SP_REMOVE_EXAM";
         public const string SP_CHANGE_STATE_EXAM = "dbo.SP_CHANGE_STATE_EXAM";
+        #endregion
+
+        #region #uspPatients
+        public const string SP_GET_PATIENT_LIST = "dbo.SP_GET_PATIENT_LIST";
+        public const string SP_GET_PATIENT_BY_ID = "dbo.SP_GET_PATIENT_BY_ID";
         #endregion
 
     }

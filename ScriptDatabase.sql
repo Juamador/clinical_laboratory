@@ -1,3 +1,8 @@
+/******************************************
+Created by: Ing. Julisy Amador
+Description: Tables and Stored Procedures to be used in a Clinical Laboratory with API workflow
+Tecnologies: C#, DAPPER, SQLSERVER, .NET CORE, CQRS, SOLID PRINCIPLES, DEPENDENCY INJECTION, MEDIATOR
+*******************************************/
 CREATE DATABASE CLINICAL
 GO
 USE CLINICAL
@@ -59,8 +64,88 @@ VALUES
 	,1
 	,1
 )
-
 go
+CREATE TABLE dbo.DocumentTypes
+(
+	DocumentTypeId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	Document VARCHAR(50) NOT NULL,
+	State INT NOT NULL DEFAULT(1)
+)
+go
+INSERT INTO dbo.DocumentTypes (Document)
+VALUES('DNI')
+CREATE TABLE dbo.TypeAges
+(
+	TypeAgeId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	TypeAge VARCHAR(15) NOT NULL,
+	State INT NOT NULL DEFAULT(1)
+)
+GO
+INSERT INTO dbo.TypeAges (TypeAge)
+VALUES('MONTHS')
+GO
+INSERT INTO dbo.TypeAges (TypeAge)
+VALUES('YEARS')
+go
+CREATE TABLE dbo.Genders
+(
+	GenderId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	Gender VARCHAR(25) NOT NULL,
+	State INT NOT NULL DEFAULT(1)
+)
+INSERT INTO dbo.Genders(Gender)
+VALUES('FEMALE')
+GO
+INSERT INTO dbo.Genders(Gender)
+VALUES('MALE')
+go
+
+CREATE TABLE dbo.Patients
+(
+	PatientId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	Names VARCHAR(100),
+	LastName VARCHAR(50),
+	MotherMaidenName VARCHAR(50),
+	DocumentTypeId INT,
+	DocumentNumber VARCHAR(25),
+	Phone VARCHAR(15),
+	TypeAgeId INT,
+	Age INT,
+	GenderId INT,
+	State INT,
+	CreatedDate Datetime2(7) DEFAULT(GETDATE()),
+	CONSTRAINT FK_PATIENTS_DOCUMENT_TYPES_DOCUMENTTYPEID FOREIGN KEY (DocumentTypeId) REFERENCES dbo.DocumentTypes(DocumentTypeId),
+	CONSTRAINT FK_PATIENTS_TYPE_AGES_TYPEAGEID FOREIGN KEY (TypeAgeId) REFERENCES dbo.TypeAges(TypeAgeId),
+	CONSTRAINT FK_PATIENTS_GENDERS_GENDERID FOREIGN KEY (GenderId) REFERENCES dbo.Genders(GenderId)
+)
+go
+INSERT INTO dbo.Patients
+(
+	Names
+	,LastName
+	,MotherMaidenName
+	,DocumentTypeId
+	,DocumentNumber
+	,Phone
+	,TypeAgeId
+	,Age
+	,GenderId
+	,State
+)
+VALUES
+(
+	'Julisy'
+	,'Amador'
+	,'Figuereo'
+	,1
+	,'89554545'
+	,'8092556655'
+	,2
+	,30
+	,2
+	,1
+)
+GO
 /*****************************************
 --STORE PROCEDURES
 *******************************************/
@@ -232,6 +317,50 @@ BEGIN
 		SET State = @State
 	WHERE ExamId = @ExamId
 END
+go
+CREATE PROCEDURE dbo.SP_GET_PATIENT_LIST
+AS
+BEGIN
+	SELECT P.PatientId
+		,P.Names
+		,P.LastName
+		,SurNames = P.LastName + ' ' + P.MotherMaidenName
+		,DocumentType = DT.Document
+		,P.DocumentNumber
+		,P.Phone
+		,Age = cast(P.Age as varchar) + ' '+ TA.TypeAge
+		,G.Gender
+		,StatePatient = CASE WHEN P.State = 1 THEN 'ACTIVO' ELSE 'INACTIVO' END
+		,P.CreatedDate
+	FROM dbo.Patients P
+	INNER JOIN dbo.DocumentTypes DT
+		ON P.DocumentTypeId = DT.DocumentTypeId
+	INNER JOIN dbo.TypeAges TA
+		ON P.TypeAgeId = TA.TypeAgeId
+	INNER JOIN dbo.Genders G
+		ON P.GenderId = G.GenderId
+END
+go
+CREATE PROCEDURE dbo.SP_GET_PATIENT_BY_ID 1
+(
+	@PatientId INT
+)
+AS
+BEGIN
+	SELECT P.PatientId
+		,P.Names
+		,P.LastName
+		,P.MotherMaidenName
+		,P.DocumentTypeId
+		,P.DocumentNumber
+		,P.Phone
+		,P.TypeAgeId
+		,P.Age
+		,P.GenderId
+	FROM dbo.Patients P
+	WHERE PatientId = @PatientId
+END
+
 /*****************************************
 --TEST STORE PROCEDURES
 *******************************************/
