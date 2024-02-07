@@ -6,28 +6,27 @@ using CLINICAL.Utilities.HelperExtensions;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
 
-namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.UpdateCommand
+namespace CLINICAL.Application.UseCase.UseCases.Exam.Commands.UpdateCommand
 {
-    public class UpdateAnalysisHandler : IRequestHandler<UpdateAnalysisCommand, BaseResponse<bool>>
+    public class UpdateExamHandleer : IRequestHandler<UpdateExamCommand, BaseResponse<bool>>
     {
-        
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public UpdateAnalysisHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateExamHandleer(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<BaseResponse<bool>> Handle(UpdateAnalysisCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<bool>> Handle(UpdateExamCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var analysis =  _mapper.Map<Entity.Analysis>(request);
-                var parameters = analysis.GetPropiertiesWithValues();
-                response.Data = await _unitOfWork.Analysis.ExcecAsync(SP.SP_ANALYSIS_EDIT, parameters);
+                var exam = _mapper.Map<Entity.Exam>(request);
+                var parameters = exam.GetPropiertiesWithValues();
+                response.Data = await _unitOfWork.Exam.ExcecAsync(SP.SP_EXAM_EDIT, parameters);
 
                 if (response.Data)
                 {
@@ -37,10 +36,9 @@ namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.UpdateCommand
             }
             catch (Exception ex)
             {
-                response.IsSuccess = false;
                 response.Message = ex.Message;
+                
             }
-
             return response;
         }
     }

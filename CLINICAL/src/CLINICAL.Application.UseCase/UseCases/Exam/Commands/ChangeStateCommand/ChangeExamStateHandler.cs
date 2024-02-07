@@ -1,48 +1,50 @@
 ﻿using AutoMapper;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
-using CLINICAL.Utilities.Constants;
-using CLINICAL.Utilities.HelperExtensions;
 using MediatR;
+using Entity = CLINICAL.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using Entity= CLINICAL.Domain.Entities;
+using CLINICAL.Utilities.HelperExtensions;
+using CLINICAL.Utilities.Constants;
 
-namespace CLINICAL.Application.UseCase.UseCases.Analysis.Commands.ChangeStateCommand
+namespace CLINICAL.Application.UseCase.UseCases.Exam.Commands.ChangeStateCommand
 {
-    public class ChangeStateAnalysisHandler : IRequestHandler<ChangeStateAnalysisCommand, BaseResponse<bool>>
+    public class ChangeExamStateHandler : IRequestHandler<ChangeExamStateCommand, BaseResponse<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ChangeStateAnalysisHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public ChangeExamStateHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<BaseResponse<bool>> Handle(ChangeStateAnalysisCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<bool>> Handle(ChangeExamStateCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseResponse<bool>();
+
             try
             {
-                var analysis = _mapper.Map<Entity.Analysis>(request);
-                var paramters = analysis.GetPropiertiesWithValues();
-                response.Data = await _unitOfWork.Analysis.ExcecAsync(SP.SP_CHANGE_ANALYSIS_STATE, parameters: paramters);
+                var exam = _mapper.Map<Entity.Exam>(request);
+                var parameters = exam.GetPropiertiesWithValues();
+                response.Data = await _unitOfWork.Exam.ExcecAsync(SP.SP_CHANGE_STATE_EXAM, parameters);
 
                 if (response.Data)
                 {
                     response.IsSuccess = true;
                     response.Message = GlobalMessages.MESSAGES_UPDATE_STATE;
                 }
+                
             }
             catch (Exception ex)
             {
                 response.Message = ex.Message;
             }
+
             return response;
         }
     }
