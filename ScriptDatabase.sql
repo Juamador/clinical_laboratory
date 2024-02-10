@@ -113,7 +113,7 @@ CREATE TABLE dbo.Patients
 	Age INT,
 	GenderId INT,
 	State INT,
-	CreatedDate Datetime2(7) DEFAULT(GETDATE()),
+	CreatedDate Datetime DEFAULT(GETDATE()),
 	CONSTRAINT FK_PATIENTS_DOCUMENT_TYPES_DOCUMENTTYPEID FOREIGN KEY (DocumentTypeId) REFERENCES dbo.DocumentTypes(DocumentTypeId),
 	CONSTRAINT FK_PATIENTS_TYPE_AGES_TYPEAGEID FOREIGN KEY (TypeAgeId) REFERENCES dbo.TypeAges(TypeAgeId),
 	CONSTRAINT FK_PATIENTS_GENDERS_GENDERID FOREIGN KEY (GenderId) REFERENCES dbo.Genders(GenderId)
@@ -146,6 +146,64 @@ VALUES
 	,1
 )
 GO
+CREATE TABLE dbo.Specialties
+(
+	SpecialtyId INT IDENTITY(1,1) PRIMARY KEY NOT NULL
+	,Name VARCHAR(100) NOT NULL
+	,State INT NOT NULL DEFAULT(1)
+	,CreatedDate DATETIME NOT NULL DEFAULT(GETDATE())
+)
+go
+INSERT INTO dbo.Specialties
+(Name)
+values
+('Prenatal')
+go
+
+GO
+CREATE TABLE dbo.Medics
+(
+	MedicId INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Names VARCHAR(100) NOT NULL,
+	LastName VARCHAR(100) NOT NULL,
+	ModerMaidenName VARCHAR(100) NOT NULL,
+	Adress VARCHAR(255),
+	Phone VARCHAR(15),
+	BirthDate Date,
+	DocumentTypeId INT NOT NULL,
+	DocumentNumber VARCHAR(25) NOT NULL,
+	SpecialtyId INT NOT NULL,
+	CreatedDate DATETIME NOT NULL DEFAULT(GETDATE()),
+	State INT NOT NULL DEFAULT(1),
+	CONSTRAINT FK_MEDICS_DOCUMENT_TYPES_DOCUMENT_TYPE_ID FOREIGN KEY (DocumentTypeId) REFERENCES dbo.DocumentTypes(DocumentTypeId),
+	CONSTRAINT FK_MEDICS_SPECIALTIES_SPECIALTY_ID FOREIGN KEY (SpecialtyId) REFERENCES dbo.Specialties(SpecialtyId)
+)
+go
+INSERT INTO dbo.Medics
+	(
+		Names,
+		LastName,
+		ModerMaidenName,
+		Adress,
+		Phone,
+		BirthDate,
+		DocumentTypeId,
+		DocumentNumber,
+		SpecialtyId
+	)
+values
+	(
+		'Cesar',
+		'Valencia',
+		'Palacios',
+		'Santo Domingo, Dominican Republic',
+		'8294565555',
+		'1980-01-20',
+		1,
+		'22855555655',
+		1
+	)
+go
 /*****************************************
 --STORE PROCEDURES
 *******************************************/
@@ -341,7 +399,7 @@ BEGIN
 		ON P.GenderId = G.GenderId
 END
 go
-CREATE PROCEDURE dbo.SP_GET_PATIENT_BY_ID 1
+CREATE PROCEDURE dbo.SP_GET_PATIENT_BY_ID
 (
 	@PatientId INT
 )
@@ -360,7 +418,117 @@ BEGIN
 	FROM dbo.Patients P
 	WHERE PatientId = @PatientId
 END
-
+GO
+CREATE PROCEDURE dbo.SP_PATIENT_REGISTER
+(
+	@Names VARCHAR(100),
+	@LastName VARCHAR(50),
+	@MotherMaidenName VARCHAR(50),
+	@DocumentTypeId INT,
+	@DocumentNumber VARCHAR(25),
+	@Phone VARCHAR(15),
+	@TypeAgeId INT,
+	@Age INT,
+	@GenderId INT
+)
+AS
+BEGIN
+	INSERT INTO dbo.Patients
+		(
+			Names
+			,LastName
+			,MotherMaidenName
+			,DocumentTypeId
+			,DocumentNumber
+			,Phone
+			,TypeAgeId
+			,Age
+			,GenderId
+		)
+	VALUES
+		(
+			@Names
+			,@LastName
+			,@MotherMaidenName
+			,@DocumentTypeId
+			,@DocumentNumber
+			,@Phone
+			,@TypeAgeId
+			,@Age
+			,@GenderId
+		)
+END
+go
+CREATE PROCEDURE dbo.SP_PATIENT_EDIT
+(
+	@PatientId INT
+	,@Names VARCHAR(100)
+	,@LastName VARCHAR(50)
+	,@MotherMaidenName VARCHAR(50)
+	,@DocumentTypeId INT
+	,@DocumentNumber VARCHAR(25)
+	,@Phone VARCHAR(15)
+	,@TypeAgeId INT
+	,@Age INT
+	,@GenderId INT
+)
+AS
+BEGIN
+	UPDATE dbo.Patients
+	SET Names = @Names
+		,LastName = @LastName
+		,MotherMaidenName = @MotherMaidenName
+		,DocumentTypeId = @DocumentTypeId
+		,DocumentNumber = @DocumentNumber
+		,Phone = @Phone
+		,TypeAgeId = @TypeAgeId
+		,Age = @Age
+		,GenderId = @GenderId
+	WHERE PatientId = @PatientId
+END
+GO
+CREATE PROCEDURE dbo.SP_PATIENT_REMOVE
+(
+	@PatientId INT
+)
+AS
+BEGIN
+	DELETE FROM dbo.Patients
+	WHERE PatientId = @PatientId
+END
+go
+CREATE PROCEDURE dbo.SP_CHANGE_PATIENT_STATE
+(
+	@PatientId INT,
+	@State INT
+)
+AS
+BEGIN
+	UPDATE dbo.Patients
+	SET State = @State
+	WHERE PatientId = @PatientId
+END
+GO
+CREATE PROCEDURE dbo.SP_GET_MIDIC_LIST
+AS
+BEGIN
+	SELECT M.MedicId
+		,M.Names
+		,Surnames = M.LastName + ' ' + M.ModerMaidenName
+		,Specialty = S.Name
+		,DocumentType =  DT.Document
+		,M.DocumentNumber
+		,M.Adress
+		,M.Phone
+		,M.BirthDate
+		,StateMedic = CASE WHEN M.State = 1 then 'ACTIVO' ELSE 'INACTIVO' END
+		,M.CreatedDate
+	FROM dbo.Medics M
+	INNER JOIN dbo.DocumentTypes DT
+		ON M.DocumentTypeId = DT.DocumentTypeId
+	INNER JOIN dbo.Specialties S
+		ON M.SpecialtyId = S.SpecialtyId
+END
 /*****************************************
 --TEST STORE PROCEDURES
 *******************************************/
@@ -368,3 +536,6 @@ EXEC dbo.SP_GET_ANALYSIS_LIST
 EXEC dbo.SP_GET_ANALYSIS_LIST_BY_ID 1
 EXEC dbo.GET_EXAMS_LIST
 EXEC dbo.SP_GET_EXAM_BY_ID 1
+EXEC dbo.SP_GET_PATIENT_BY_ID 1
+EXEC dbo.SP_GET_PATIENT_LIST
+EXEC dbo.SP_GET_MIDIC_LIST

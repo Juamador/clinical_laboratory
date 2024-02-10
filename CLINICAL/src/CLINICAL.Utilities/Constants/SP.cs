@@ -30,7 +30,15 @@ namespace CLINICAL.Utilities.Constants
         #region #uspPatients
         public const string SP_GET_PATIENT_LIST = "dbo.SP_GET_PATIENT_LIST";
         public const string SP_GET_PATIENT_BY_ID = "dbo.SP_GET_PATIENT_BY_ID";
+        public const string SP_PATIENT_REGISTER = "dbo.SP_PATIENT_REGISTER";
+        public const string SP_PATIENT_EDIT = "dbo.SP_PATIENT_EDIT";
+        public const string SP_PATIENT_REMOVE = "dbo.SP_PATIENT_REMOVE";
+        public const string SP_CHANGE_PATIENT_STATE = "dbo.SP_CHANGE_PATIENT_STATE";
         #endregion
 
+
+        #region uspMedics
+        public const string SP_GET_MIDIC_LIST = "dbo.SP_GET_MIDIC_LIST";
+        #endregion
     }
 }

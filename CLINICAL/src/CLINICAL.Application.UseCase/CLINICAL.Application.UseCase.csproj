@@ -21,4 +21,8 @@
     <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Medic\Commands\" />
+  </ItemGroup>
+
 </Project>

@@ -19,6 +19,6 @@ namespace CLINICAL.Domain.Entities
         public int? Age { get; set; }
         public int? GenderId { get; set; }
         public int? State { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

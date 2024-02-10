@@ -4,7 +4,6 @@ using CLINICAL.Application.UseCase.UseCases.Exam.Commands.DeleteCommand;
 using CLINICAL.Application.UseCase.UseCases.Exam.Commands.UpdateCommand;
 using CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetAllQuery;
 using CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetByIdQuery;
-using CLINICAL.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

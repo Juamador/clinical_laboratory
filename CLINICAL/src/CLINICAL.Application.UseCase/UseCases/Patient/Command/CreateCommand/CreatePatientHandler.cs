@@ -6,38 +6,39 @@ using CLINICAL.Utilities.HelperExtensions;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
 
-namespace CLINICAL.Application.UseCase.UseCases.Exam.Commands.ChangeStateCommand
+namespace CLINICAL.Application.UseCase.UseCases.Patient.Command.CreateCommand
 {
-    public class ChangeExamStateHandler : IRequestHandler<ChangeExamStateCommand, BaseResponse<bool>>
+    public class CreatePatientHandler : IRequestHandler<CreatePatientCommand, BaseResponse<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ChangeExamStateHandler(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public CreatePatientHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<BaseResponse<bool>> Handle(ChangeExamStateCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<bool>> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var exam = _mapper.Map<Entity.Exam>(request);
-                var parameters = exam.GetPropiertiesWithValues();
-                response.Data = await _unitOfWork.Exam.ExcecAsync(SP.SP_CHANGE_STATE_EXAM, parameters);
+                var patient = _mapper.Map<Entity.Patient>(request);
+                var parameters = patient.GetPropiertiesWithValues();
+                response.Data = await _unitOfWork.Patient.ExcecAsync(SP.SP_PATIENT_REGISTER, parameters);
 
                 if (response.Data)
                 {
                     response.IsSuccess = true;
-                    response.Message = GlobalMessages.MESSAGES_UPDATE_STATE;
+                    response.Message = GlobalMessages.MESSAGES_SAVE;
                 }
-                
             }
             catch (Exception ex)
             {
                 response.Message = ex.Message;
+                    
             }
 
             return response;
