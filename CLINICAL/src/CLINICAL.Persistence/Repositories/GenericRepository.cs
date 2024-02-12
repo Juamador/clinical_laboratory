@@ -40,5 +40,22 @@ namespace CLINICAL.Persistence.Repositories
             var recordAffecteds = await connection.ExecuteAsync(storedProcedure, param: objParam, commandType: CommandType.StoredProcedure);
             return recordAffecteds > 0;
         }
+
+        public async Task<IEnumerable<T>> GetAllWithPagination(string storedProcedure, object parameter)
+        {
+            using var connection = _context.createConnection;
+            var objParam = new DynamicParameters(parameter);
+            return await connection.QueryAsync<T>(storedProcedure, param: objParam, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<int> CountAsync(string tableName)
+        {
+            using var connection = _context.createConnection;
+            var query = $"SELECT COUNT(1) FROM {tableName}";
+            
+            var count = await connection.ExecuteScalarAsync<int>(query, commandType: CommandType.Text);
+
+            return count;
+        }
     }
 }

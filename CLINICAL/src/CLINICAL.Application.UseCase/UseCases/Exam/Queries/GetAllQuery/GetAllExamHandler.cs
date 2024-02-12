@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetAllQuery
 {
-    public class GetAllExamHandler : IRequestHandler<GetAllExamQuery, BaseResponse<IEnumerable<GetallExamResponseDto>>>
+    public class GetAllExamHandler : IRequestHandler<GetAllExamQuery, BasePaginationResponse<IEnumerable<GetallExamResponseDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -20,17 +20,21 @@ namespace CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetAllQuery
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<BaseResponse<IEnumerable<GetallExamResponseDto>>> Handle(GetAllExamQuery request, CancellationToken cancellationToken)
+        public async Task<BasePaginationResponse<IEnumerable<GetallExamResponseDto>>> Handle(GetAllExamQuery request, CancellationToken cancellationToken)
         {
-            var response = new BaseResponse<IEnumerable<GetallExamResponseDto>>();
+            var response = new BasePaginationResponse<IEnumerable<GetallExamResponseDto>>();
 
             try
             {
-                var exams = await _unitOfWork.Exam.GetAllExams(SP.GET_EXAMS_LIST);
+                var count = await _unitOfWork.Exam.CountAsync(TB.Exams);
+                var exams = await _unitOfWork.Exam.GetAllExams(SP.GET_EXAMS_LIST, request);
                 
                 if(exams is not null)
                 {
-                    response.IsSuccess = true;
+                   response.IsSuccess = true;
+                    response.PageNumber = request.PageNumber;
+                    response.TotalPages = (int)Math.Ceiling(count / (double)request.PageSize);
+                    response.TotalCount = count;
                     response.Data = exams;
                     response.Message = GlobalMessages.MESSAGES_QUERY;
                 }

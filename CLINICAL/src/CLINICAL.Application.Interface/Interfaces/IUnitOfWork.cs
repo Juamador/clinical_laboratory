@@ -1,9 +1,4 @@
 ﻿using CLINICAL.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLINICAL.Application.Interface.Interfaces
 {
@@ -11,5 +6,8 @@ namespace CLINICAL.Application.Interface.Interfaces
     {
         IGenericRepository<Analysis> Analysis { get; }
         IExamRepository Exam { get; }
+        IPatientRepository Patient { get; }
+        IMedicRepository Medic { get; }
+        ITakeExamRepository TakeExam { get; }
     }
 }

@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
 using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
+using CLINICAL.Utilities.Constants;
+using CLINICAL.Utilities.HelperExtensions;
 using MediatR;
 using Entity = CLINICAL.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CLINICAL.Utilities.HelperExtensions;
-using CLINICAL.Utilities.Constants;
 
 namespace CLINICAL.Application.UseCase.UseCases.Exam.Commands.ChangeStateCommand
 {

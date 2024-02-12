@@ -4,7 +4,6 @@ using CLINICAL.Application.UseCase.UseCases.Exam.Commands.DeleteCommand;
 using CLINICAL.Application.UseCase.UseCases.Exam.Commands.UpdateCommand;
 using CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetAllQuery;
 using CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetByIdQuery;
-using CLINICAL.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +21,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("ListExams")]
-        public async Task<IActionResult> ListExams()
+        public async Task<IActionResult> ListExams([FromQuery] GetAllExamQuery query)
         {
-            var response = await _mediator.Send(new GetAllExamQuery());
+            var response = await _mediator.Send(query);
 
             return Ok(response);
         }

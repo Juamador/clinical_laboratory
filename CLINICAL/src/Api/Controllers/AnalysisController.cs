@@ -22,9 +22,9 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AnalysisList()
+        public async Task<IActionResult> AnalysisList([FromQuery] GetAllAnalysisQuery query)
         {
-            var response = await _mediator.Send(new GetAllAnalysisQuery());
+            var response = await _mediator.Send(query);
             return Ok(response);
         }
 
