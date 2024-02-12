@@ -205,6 +205,35 @@ values
 		1
 	)
 go
+CREATE TABLE dbo.TakeExam
+(
+	TakeExamId INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	PatientId INT NOT NULL,
+	MedicId INT NOT NULL,
+	State INT DEFAULT(1) NOT NULL,
+	CreatedDate DateTime DEFAULT(GETDATE()) NOT NULL,
+	CONSTRAINT FK_TAKEEXAM_PATIENTS_PATIENTID FOREIGN KEY(PatientId) REFERENCES dbo.Patients(PatientId),
+	CONSTRAINT FK_TAKEEXAM_MEDICS_MEDICID FOREIGN KEY(MedicId) REFERENCES dbo.Medics(MedicId)
+)
+INSERT INTO dbo.TakeExam
+	(
+		PatientId,
+		MedicId
+	)
+VALUES
+	(
+		1,
+		1
+	)
+GO
+CREATE TABLE dbo.TakeExamDetail
+(
+	TakeExamDetailId INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	TakeExamId INT  NOT NULL,
+	ExamId INT NOT NULL,
+	MedicId INT NOT NULL,
+	AnalysisId INT NOT NULL,	
+)
 /*****************************************
 --STORE PROCEDURES
 *******************************************/
@@ -672,6 +701,56 @@ BEGIN
 	SET State = @State
 	WHERE MedicId = @MedicId
 END
+go
+CREATE PROCEDURE dbo.SP_GET_TAKEEXAM_LIST
+(
+	@PageNumber INT,
+	@PageSize INT
+)
+AS
+BEGIN
+	SELECT TE.TakeExamId
+		,Patient = P.LastName + ' ' + p.MotherMaidenName + ' ' + p.Names
+		,Medic = M.LastName + ' ' + M.MotherMaidenName + ' ' + M.Names
+		,StateTakeExam =(
+							CASE TE.State
+								WHEN 1 THEN 'FINALIZADO'
+							ELSE 'PENDIENTE' END
+						)
+		,TE.CreatedDate
+	FROM dbo.TakeExam TE
+	INNER JOIN dbo.Patients P
+		ON TE.PatientId = P.PatientId
+	INNER JOIN dbo.Medics M
+		ON TE.MedicId = M.MedicId
+	ORDER BY TE.TakeExamId
+	OFFSET (@PageNumber -1) * @PageSize ROWS
+	FETCH NEXT @PageSize ROWS ONLY
+END
+GO
+
+CREATE TABLE dbo.TakeExamDetail
+(
+	TakeExamDetailId INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	TakeExamId INT  NOT NULL,
+	ExamId INT NOT NULL,
+	MedicId INT NOT NULL,
+	AnalysisId INT NOT NULL,	
+)
+INSERT INTO dbo.TakeExamDetail
+	(
+		TakeExamId,
+		ExamId,
+		MedicId,
+		AnalysisId
+	)
+VALUES
+	(
+		1,
+		1,
+		1,
+		1
+	)
 /*****************************************
 --TEST STORE PROCEDURES
 *******************************************/
@@ -686,3 +765,4 @@ EXEC dbo.SP_GET_PATIENT_BY_ID 1
 EXEC dbo.SP_GET_PATIENT_LIST 2,2
 EXEC dbo.SP_GET_MIDIC_LIST
 EXEC dbo.SP_GET_MEDIT_BY_ID 1
+EXEC dbo.SP_GET_TAKEEXAM_LIST 1, 10

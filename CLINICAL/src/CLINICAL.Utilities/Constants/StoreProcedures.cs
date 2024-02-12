@@ -39,6 +39,10 @@
         public const string SP_MEDIC_REMOVE = "dbo.SP_MEDIC_REMOVE";
         public const string SP_CHANGE_STATE_MEDIC = "dbo.SP_CHANGE_STATE_MEDIC";
         #endregion
+
+        #region uspTakeExam
+        public const string SP_GET_TAKEEXAM_LIST = "dbo.SP_GET_TAKEEXAM_LIST";
+        #endregion
     }
 
     public class TB
@@ -47,5 +51,6 @@
         public const string Exams = "dbo.Exams";
         public const string Medics = "dbo.Medics";
         public const string Patients = "dbo.Patients";
+        public const string TakeExam = "dbo.TakeExam";
     }
 }
