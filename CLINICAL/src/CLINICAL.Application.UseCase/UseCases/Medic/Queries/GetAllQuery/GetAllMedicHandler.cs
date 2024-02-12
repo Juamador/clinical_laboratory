@@ -6,7 +6,7 @@ using MediatR;
 
 namespace CLINICAL.Application.UseCase.UseCases.Medic.Queries.GetAllQuery
 {
-    public class GetAllMedicHandler : IRequestHandler<GetAllMedicQuery, BaseResponse<IEnumerable<GetAllMedicResponseDto>>>
+    public class GetAllMedicHandler : IRequestHandler<GetAllMedicQuery, BasePaginationResponse<IEnumerable<GetAllMedicResponseDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -15,17 +15,20 @@ namespace CLINICAL.Application.UseCase.UseCases.Medic.Queries.GetAllQuery
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<BaseResponse<IEnumerable<GetAllMedicResponseDto>>> Handle(GetAllMedicQuery request, CancellationToken cancellationToken)
+        public async Task<BasePaginationResponse<IEnumerable<GetAllMedicResponseDto>>> Handle(GetAllMedicQuery request, CancellationToken cancellationToken)
         {
-            var response = new BaseResponse<IEnumerable<GetAllMedicResponseDto>>();
+            var response = new BasePaginationResponse<IEnumerable<GetAllMedicResponseDto>>();
 
             try
             {
-                var medics = await _unitOfWork.Medic.GetAllMedics(SP.SP_GET_MIDIC_LIST);
-
+                var count = await _unitOfWork.Medic.CountAsync(TB.Medics);
+                var medics = await _unitOfWork.Medic.GetAllMedics(SP.SP_GET_MEDIC_LIST, request);
                 if(medics is not null)
                 {
                     response.IsSuccess = true;
+                    response.PageNumber = request.PageNumber;
+                    response.TotalPages = (int)Math.Ceiling(count * (double)request.PageSize);
+                    response.TotalCount = count;
                     response.Data = medics;
                     response.Message = GlobalMessages.MESSAGES_QUERY;
                 }

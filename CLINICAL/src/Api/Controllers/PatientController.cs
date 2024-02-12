@@ -21,9 +21,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("ListPatients")]
-        public async Task<IActionResult> ListPatients()
+        public async Task<IActionResult> ListPatients([FromQuery] GeAllPatientQuery query)
         {
-            var response = await _mediator.Send(new GeAllPatientQuery());
+            var response = await _mediator.Send(query);
 
             return Ok(response);
         }

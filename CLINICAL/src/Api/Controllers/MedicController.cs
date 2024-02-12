@@ -1,6 +1,10 @@
-﻿using CLINICAL.Application.UseCase.UseCases.Medic.Queries.GetAllQuery;
+﻿using CLINICAL.Application.UseCase.UseCases.Medic.Commands.ChangeStateCommand;
+using CLINICAL.Application.UseCase.UseCases.Medic.Commands.CreateCommand;
+using CLINICAL.Application.UseCase.UseCases.Medic.Commands.DeleteCommand;
+using CLINICAL.Application.UseCase.UseCases.Medic.Commands.UpdateCommand;
+using CLINICAL.Application.UseCase.UseCases.Medic.Queries.GetAllQuery;
+using CLINICAL.Application.UseCase.UseCases.Medic.Queries.GetByIdQuery;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -17,10 +21,45 @@ namespace Api.Controllers
         }
 
         [HttpGet("ListMedics")]
-        public async Task<IActionResult> ListMedics()
+        public async Task<IActionResult> ListMedics([FromQuery] GetAllMedicQuery query)
         {
-            var response = await _mediator.Send(new GetAllMedicQuery());
+            var response = await _mediator.Send(query);
 
+            return Ok(response);
+        }
+
+        [HttpGet("{medicId:int}")]
+        public async Task<IActionResult> MedicById(int medicId)
+        {
+            var response = await _mediator.Send(new GetMedicByIdQuery() { MedicId = medicId });
+            return Ok(response);
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterMedic([FromBody] CreateMedicCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpPut("Edit")]
+        public async Task<IActionResult> EditMedic([FromBody] UpdateMedicCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpDelete("Remove/{medicId:int}")]
+        public async Task<IActionResult> RemoveMedic(int medicId )
+        {
+            var response = await _mediator.Send(new DeleteMedicCommand() { MedicId = medicId});
+            return Ok(response);
+        }
+
+        [HttpPut("ChangeState")]
+        public async Task<IActionResult> ChangeStateMedic([FromBody] ChangeStateMedicCommand command)
+        {
+            var response = await _mediator.Send(command);
             return Ok(response);
         }
     }

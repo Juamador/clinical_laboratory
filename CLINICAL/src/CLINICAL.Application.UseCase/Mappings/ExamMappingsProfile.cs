@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace CLINICAL.Application.UseCase.Mappings
 {
-    public class ExamMappingProfile: Profile
+    public class ExamMappingsProfile: Profile
     {
-        public ExamMappingProfile()
+        public ExamMappingsProfile()
         {
             CreateMap<Exam, GetExamByIdResponseDto>()
                 .ReverseMap();

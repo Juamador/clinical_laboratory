@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CLINICAL.Utilities.Constants
+﻿namespace CLINICAL.Utilities.Constants
 {
     public class SP
     {
@@ -38,7 +32,20 @@ namespace CLINICAL.Utilities.Constants
 
 
         #region uspMedics
-        public const string SP_GET_MIDIC_LIST = "dbo.SP_GET_MIDIC_LIST";
+        public const string SP_GET_MEDIC_LIST = "dbo.SP_GET_MEDIC_LIST";
+        public const string SP_GET_MEDIT_BY_ID = "dbo.SP_GET_MEDIT_BY_ID";
+        public const string SP_MEDIC_REGISTER = "dbo.SP_MEDIC_REGISTER";
+        public const string SP_MEDIC_EDIT = "dbo.SP_MEDIC_EDIT";
+        public const string SP_MEDIC_REMOVE = "dbo.SP_MEDIC_REMOVE";
+        public const string SP_CHANGE_STATE_MEDIC = "dbo.SP_CHANGE_STATE_MEDIC";
         #endregion
+    }
+
+    public class TB
+    {
+        public const string Analysis = "dbo.Analysis";
+        public const string Exams = "dbo.Exams";
+        public const string Medics = "dbo.Medics";
+        public const string Patients = "dbo.Patients";
     }
 }

@@ -166,8 +166,8 @@ CREATE TABLE dbo.Medics
 	MedicId INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	Names VARCHAR(100) NOT NULL,
 	LastName VARCHAR(100) NOT NULL,
-	ModerMaidenName VARCHAR(100) NOT NULL,
-	Adress VARCHAR(255),
+	MotherMaidenName VARCHAR(100) NOT NULL,
+	Address VARCHAR(255),
 	Phone VARCHAR(15),
 	BirthDate Date,
 	DocumentTypeId INT NOT NULL,
@@ -178,13 +178,14 @@ CREATE TABLE dbo.Medics
 	CONSTRAINT FK_MEDICS_DOCUMENT_TYPES_DOCUMENT_TYPE_ID FOREIGN KEY (DocumentTypeId) REFERENCES dbo.DocumentTypes(DocumentTypeId),
 	CONSTRAINT FK_MEDICS_SPECIALTIES_SPECIALTY_ID FOREIGN KEY (SpecialtyId) REFERENCES dbo.Specialties(SpecialtyId)
 )
+
 go
 INSERT INTO dbo.Medics
 	(
 		Names,
 		LastName,
-		ModerMaidenName,
-		Adress,
+		MotherMaidenName,
+		Address,
 		Phone,
 		BirthDate,
 		DocumentTypeId,
@@ -207,7 +208,12 @@ go
 /*****************************************
 --STORE PROCEDURES
 *******************************************/
-CREATE PROCEDURE dbo.SP_GET_ANALYSIS_LIST
+
+ALTER PROCEDURE dbo.SP_GET_ANALYSIS_LIST
+(
+	@PageNumber INT,
+	@PageSize INT
+)
 AS
 BEGIN
 	SELECT
@@ -216,6 +222,9 @@ BEGIN
 		,CreatedDate
 		,State
 	FROM dbo.Analysis
+	ORDER BY AnalysisId
+	OFFSET (@PageNumber - 1) * @PageSize ROWS
+	FETCH NEXT @PageSize ROWS ONLY
 END
 CREATE PROCEDURE dbo.SP_GET_ANALYSIS_LIST_BY_ID
 	@AnalysisId INT
@@ -289,7 +298,12 @@ go
 		WHERE AnalysisId = @AnalysisId
 	END
 go
+
 CREATE PROCEDURE dbo.GET_EXAMS_LIST
+(
+	@PageNumber INT,
+	@PageSize INT
+)
 AS
 BEGIN
 	SELECT
@@ -301,6 +315,9 @@ BEGIN
 	FROM dbo.Exams E
 	INNER JOIN dbo.Analysis A
 		ON E.AnalysisId = A.AnalysisId
+	ORDER BY E.ExamId
+	OFFSET (@PageNumber - 1) * @PageSize ROWS
+	FETCH NEXT @PageSize ROWS ONLY
 END
 GO
 CREATE PROCEDURE dbo.SP_GET_EXAM_BY_ID
@@ -377,6 +394,10 @@ BEGIN
 END
 go
 CREATE PROCEDURE dbo.SP_GET_PATIENT_LIST
+(
+	@PageNumber INT,
+	@PageSize INT
+)
 AS
 BEGIN
 	SELECT P.PatientId
@@ -397,6 +418,9 @@ BEGIN
 		ON P.TypeAgeId = TA.TypeAgeId
 	INNER JOIN dbo.Genders G
 		ON P.GenderId = G.GenderId
+	ORDER BY P.PatientId
+	OFFSET (@PageNumber - 1) * @PageSize ROWS
+	FETCH NEXT @PageSize ROWS ONLY
 END
 go
 CREATE PROCEDURE dbo.SP_GET_PATIENT_BY_ID
@@ -509,16 +533,20 @@ BEGIN
 	WHERE PatientId = @PatientId
 END
 GO
-CREATE PROCEDURE dbo.SP_GET_MIDIC_LIST
+CREATE PROCEDURE dbo.SP_GET_MEDIC_LIST
+(
+	@PageNumber INT,
+	@PageSize INT
+)
 AS
 BEGIN
 	SELECT M.MedicId
 		,M.Names
-		,Surnames = M.LastName + ' ' + M.ModerMaidenName
+		,Surnames = M.LastName + ' ' + M.MotherMaidenName
 		,Specialty = S.Name
 		,DocumentType =  DT.Document
 		,M.DocumentNumber
-		,M.Adress
+		,M.Address
 		,M.Phone
 		,M.BirthDate
 		,StateMedic = CASE WHEN M.State = 1 then 'ACTIVO' ELSE 'INACTIVO' END
@@ -528,14 +556,133 @@ BEGIN
 		ON M.DocumentTypeId = DT.DocumentTypeId
 	INNER JOIN dbo.Specialties S
 		ON M.SpecialtyId = S.SpecialtyId
+	ORDER BY M.MedicId
+	OFFSET (@PageNumber - 1) * @PageSize ROWS
+	FETCH NEXT @PageSize ROWS ONLY
+END
+GO
+CREATE PROCEDURE dbo.SP_GET_MEDIT_BY_ID
+(
+	@MedicId INT
+)
+AS
+BEGIN
+	SELECT MedicId
+		,Names
+		,LastName
+		,MotherMaidenName
+		,Address
+		,Phone
+		,BirthDate
+		,DocumentTypeId
+		,DocumentNumber
+		,SpecialtyId
+	FROM dbo.Medics
+	WHERE MedicId = @MedicId
+END
+go
+CREATE PROCEDURE dbo.SP_MEDIC_REGISTER
+(
+	@Names VARCHAR(100)
+	,@LastName VARCHAR(100)
+	,@MotherMaidenName VARCHAR(100)
+	,@Address VARCHAR(255)
+	,@Phone VARCHAR(15)
+	,@BirthDate DATE
+	,@DocumentTypeId INT
+	,@DocumentNumber VARCHAR(25)
+	,@SpecialtyId INT
+)
+AS
+BEGIN
+	INSERT INTO dbo.Medics
+		(
+			Names
+			,LastName
+			,MotherMaidenName
+			,Address
+			,Phone
+			,BirthDate
+			,DocumentTypeId
+			,DocumentNumber
+			,SpecialtyId
+		)
+	VALUES
+		(
+			@Names
+			,@LastName
+			,@MotherMaidenName
+			,@Address
+			,@Phone
+			,@BirthDate
+			,@DocumentTypeId
+			,@DocumentNumber
+			,@SpecialtyId
+		)
+END
+go
+
+CREATE PROCEDURE dbo.SP_MEDIC_EDIT
+(
+	@MedicId INT
+	,@Names VARCHAR(100)
+	,@LastName VARCHAR(100)
+	,@MotherMaidenName VARCHAR(100)
+	,@Address VARCHAR(255)
+	,@Phone VARCHAR(15)
+	,@BirthDate DATE
+	,@DocumentTypeId INT
+	,@DocumentNumber VARCHAR(25)
+	,@SpecialtyId INT
+)
+AS
+BEGIN
+	UPDATE dbo.Medics
+	SET	Names = @Names
+		,LastName = @LastName
+		,MotherMaidenName = @MotherMaidenName
+		,Address = @Address
+		,Phone = @Phone
+		,BirthDate = @BirthDate
+		,DocumentTypeId = @DocumentTypeId
+		,DocumentNumber = @DocumentNumber
+		,SpecialtyId = @SpecialtyId
+	WHERE MedicId = @MedicId
+END
+GO
+
+CREATE PROCEDURE dbo.SP_MEDIC_REMOVE
+(
+	@MedicId INT
+)
+AS
+BEGIN
+	DELETE FROM dbo.Medics
+	WHERE MedicId = @MedicId
+END
+go
+CREATE PROCEDURE dbo.SP_CHANGE_STATE_MEDIC
+(
+	@MedicId INT,
+	@State INT
+)
+AS
+BEGIN
+	UPDATE dbo.Medics
+	SET State = @State
+	WHERE MedicId = @MedicId
 END
 /*****************************************
 --TEST STORE PROCEDURES
 *******************************************/
-EXEC dbo.SP_GET_ANALYSIS_LIST
+EXEC dbo.SP_GET_ANALYSIS_LIST 1, 2
+EXEC dbo.SP_GET_ANALYSIS_LIST 2, 2
 EXEC dbo.SP_GET_ANALYSIS_LIST_BY_ID 1
-EXEC dbo.GET_EXAMS_LIST
+EXEC dbo.GET_EXAMS_LIST 1, 2
+EXEC dbo.SP_GET_MEDIC_LIST 1,2
+EXEC dbo.SP_GET_MEDIC_LIST 2,2
 EXEC dbo.SP_GET_EXAM_BY_ID 1
 EXEC dbo.SP_GET_PATIENT_BY_ID 1
-EXEC dbo.SP_GET_PATIENT_LIST
+EXEC dbo.SP_GET_PATIENT_LIST 2,2
 EXEC dbo.SP_GET_MIDIC_LIST
+EXEC dbo.SP_GET_MEDIT_BY_ID 1

@@ -5,6 +5,6 @@ namespace CLINICAL.Application.Interface.Interfaces
 {
     public interface IPatientRepository: IGenericRepository<Patient>
     {
-        Task<IEnumerable<GetAllPatientResponseDTo>> GetAllPatients(string storeProcedure);
+        Task<IEnumerable<GetAllPatientResponseDTo>> GetAllPatients(string storeProcedure, object parameter);
     }
 }

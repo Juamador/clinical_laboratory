@@ -15,8 +15,8 @@ WHEN 'bit' then 'bool'
 WHEN 'text' then 'string'
 WHEN 'nvarchar' then 'string'
 WHEN 'datetime2' then 'DateTime'
+WHEN 'date' then 'DateTime'
 END
 + ' ' + I.COLUMN_NAME + ' {get; set;}'
-
 FROM INFORMATION_SCHEMA.COLUMNS I
-WHERE I.TABLE_NAME ='Patients'
+WHERE I.TABLE_NAME ='Medics'

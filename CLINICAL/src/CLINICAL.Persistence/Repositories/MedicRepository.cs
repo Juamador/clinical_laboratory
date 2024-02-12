@@ -15,10 +15,11 @@ namespace CLINICAL.Persistence.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<GetAllMedicResponseDto>> GetAllMedics(string storedProcedure)
+        public async Task<IEnumerable<GetAllMedicResponseDto>> GetAllMedics(string storedProcedure, object parameter)
         {
             var connection = _context.createConnection;
-            var medics = await connection.QueryAsync<GetAllMedicResponseDto>(storedProcedure, commandType: CommandType.StoredProcedure);
+            var objParam = new DynamicParameters(parameter);
+            var medics = await connection.QueryAsync<GetAllMedicResponseDto>(storedProcedure, param: objParam, commandType: CommandType.StoredProcedure);
             return medics;
         }
     }
