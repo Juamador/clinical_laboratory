@@ -4,11 +4,6 @@ using CLINICAL.Application.Interface.Interfaces;
 using CLINICAL.Application.UseCase.Commonds.Bases;
 using CLINICAL.Utilities.Constants;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLINICAL.Application.UseCase.UseCases.TakeExam.Queries.GetByIdQuery
 {
@@ -29,7 +24,7 @@ namespace CLINICAL.Application.UseCase.UseCases.TakeExam.Queries.GetByIdQuery
             try
             {
                 var takeExams = await _unitOfWork.TakeExam.GetTakeExamById(request.TakeExamId);
-                takeExams.TakeExamDetail = await _unitOfWork.TakeExam.GetTakeExamDetailByTakeExamId(request.TakeExamId);
+                takeExams.TakeExamDetails = await _unitOfWork.TakeExam.GetTakeExamDetailByTakeExamId(request.TakeExamId);
 
                 response.IsSuccess = true;
                 response.Data = _mapper.Map<GetTakeExamByIdResponseDto>(takeExams);

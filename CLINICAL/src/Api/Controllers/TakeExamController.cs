@@ -1,7 +1,9 @@
-﻿using CLINICAL.Application.UseCase.UseCases.TakeExam.Queries.GetAllQuery;
+﻿using CLINICAL.Application.UseCase.UseCases.TakeExam.Commands.ChangeStateCommand;
+using CLINICAL.Application.UseCase.UseCases.TakeExam.Commands.CreateCommand;
+using CLINICAL.Application.UseCase.UseCases.TakeExam.Commands.UpdateCommand;
+using CLINICAL.Application.UseCase.UseCases.TakeExam.Queries.GetAllQuery;
 using CLINICAL.Application.UseCase.UseCases.TakeExam.Queries.GetByIdQuery;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -30,5 +32,27 @@ namespace Api.Controllers
             var response = await _mediator.Send(new GetTakeExamByIdQuery() { TakeExamId=takeExamId});
             return Ok(response);
         }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterTakeExam([FromBody] CreateTakeExamCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpPut("Edit")]
+        public async Task<IActionResult> EditTakeExam([FromBody] UpdateTakeExamCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpPost("ChangeState")]
+        public async Task<IActionResult> ChangeStateTakeExam([FromBody] ChangeStateTakeExamCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+
     }
 }
