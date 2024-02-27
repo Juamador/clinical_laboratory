@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLINICAL.Application.DTOs.Exam.Response
 {
-    public class GetallExamResponseDto
+    public class GetAllExamResponseDto
     {
         public int? ExamId { get; set; }
         public string? Name { get; set; }

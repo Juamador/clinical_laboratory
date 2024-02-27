@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetAllQuery
 {
-    public class GetAllExamHandler : IRequestHandler<GetAllExamQuery, BasePaginationResponse<IEnumerable<GetallExamResponseDto>>>
+    public class GetAllExamHandler : IRequestHandler<GetAllExamQuery, BasePaginationResponse<IEnumerable<GetAllExamResponseDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -20,9 +20,9 @@ namespace CLINICAL.Application.UseCase.UseCases.Exam.Queries.GetAllQuery
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<BasePaginationResponse<IEnumerable<GetallExamResponseDto>>> Handle(GetAllExamQuery request, CancellationToken cancellationToken)
+        public async Task<BasePaginationResponse<IEnumerable<GetAllExamResponseDto>>> Handle(GetAllExamQuery request, CancellationToken cancellationToken)
         {
-            var response = new BasePaginationResponse<IEnumerable<GetallExamResponseDto>>();
+            var response = new BasePaginationResponse<IEnumerable<GetAllExamResponseDto>>();
 
             try
             {
